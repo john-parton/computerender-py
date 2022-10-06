@@ -61,11 +61,11 @@ This project was generated from [@cjolowicz]'s [Hypermodern Python Cookiecutter]
 [@cjolowicz]: https://github.com/cjolowicz
 [pypi]: https://pypi.org/
 [hypermodern python cookiecutter]: https://github.com/cjolowicz/cookiecutter-hypermodern-python
-[file an issue]: https://github.com/john-parton/computerender/issues
+[file an issue]: https://github.com/john-parton/computerender-py/issues
 [pip]: https://pip.pypa.io/
 
 <!-- github-only -->
 
-[license]: https://github.com/john-parton/computerender/blob/main/LICENSE
-[contributor guide]: https://github.com/john-parton/computerender/blob/main/CONTRIBUTING.md
+[license]: https://github.com/john-parton/computerender-py/blob/main/LICENSE
+[contributor guide]: https://github.com/john-parton/computerender-py/blob/main/CONTRIBUTING.md
 [command-line reference]: https://computerender.readthedocs.io/en/latest/usage.html
