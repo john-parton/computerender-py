@@ -1,5 +1,5 @@
 """Computerender."""
 
-from .api import Api
+from .api import Api as Computerender, SyncApi as ComputerenderSync
 
-__all__ = ["Api"]
+__all__ = ["Computerender", "ComputerenderSync"]
