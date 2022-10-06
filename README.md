@@ -47,7 +47,7 @@ To learn more, see the [Contributor Guide].
 ## License
 
 Distributed under the terms of the [MIT license][license],
-_Computerender_ is free and open source software.
+this python binding for _Computerender_ is free and open source software.
 
 ## Issues
 
