@@ -1,16 +1,15 @@
 import asyncio
-
 import io
-from decimal import Decimal as D
 import os
-import typing 
+import typing
+from decimal import Decimal as D
 from urllib.parse import quote_plus
 
-# from typing import TypedDict
-
-import aiohttp 
+import aiohttp
 from PIL import Image
 
+
+# from typing import TypedDict
 
 
 class ApiError(ValueError):
@@ -27,6 +26,7 @@ class TermError(SafetyError):
 
 class ContentError(SafetyError):
     pass
+
 
 # By default all keys are required :/
 # class Parameters(TypedDict):
@@ -49,9 +49,7 @@ class Api:
 
     def __init__(self, api_key: typing.Optional[str] = None):
         self.api_key = api_key or os.environ["COMPUTERENDER_KEY"]
-        self.headers = {
-            "Authorization": f"X-API-Key {self.api_key}"
-        }
+        self.headers = {"Authorization": f"X-API-Key {self.api_key}"}
         self.session = aiohttp.ClientSession(headers=self.headers)
 
     def _parse_currency(self, value: str) -> D:
@@ -77,7 +75,9 @@ class Api:
     def _clean_kwargs(self, kwargs) -> dict:
         for key, alias in self.KWARG_ALIASES:
             if key in kwargs and alias in kwargs:
-                raise ValueError(f"Do not pass both {key!r} and {alias!r} as keyword arguments")
+                raise ValueError(
+                    f"Do not pass both {key!r} and {alias!r} as keyword arguments"
+                )
 
             if alias in kwargs:
                 kwargs[key] = kwargs.pop(alias)
@@ -85,7 +85,9 @@ class Api:
         extra_keys = kwargs.keys() - {"w", "h", "seed", "guidance", "iterations"}
 
         if extra_keys:
-            raise ValueError(f"Invalid keys passed to Computerender api: {', '.join(map(repr, extra_keys))}")
+            raise ValueError(
+                f"Invalid keys passed to Computerender api: {', '.join(map(repr, extra_keys))}"
+            )
 
         return kwargs
 
@@ -116,14 +118,16 @@ class Api:
                 body = await response.read()
 
                 if self._check_nsfw(body):
-                    raise ContentError(f"{prompt!r} triggered computerender post-generation check")
+                    raise ContentError(
+                        f"{prompt!r} triggered computerender post-generation check"
+                    )
 
                 return body
-    
+
     # TODO improve the annotation here
     async def cost(self, prompt: str, **kwargs) -> D:
         kwargs = self._clean_kwargs(kwargs)
-        
+
         request_url: str = self._format_url("cost", prompt)
 
         async with self.session.get(request_url, params=kwargs) as response:
@@ -139,10 +143,9 @@ class Api:
     # Allows using the API as a context manager
     async def __aenter__(self):
         return self
-    
+
     async def __aexit__(self, *args, **kwargs):
         await self.close()
-
 
 
 # Not really tested at the moment
