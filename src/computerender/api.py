@@ -77,7 +77,7 @@ class Api:
     def _clean_kwargs(self, kwargs) -> dict:
         for key, alias in self.KWARG_ALIASES:
             if key in kwargs and alias in kwargs:
-                raise ValueError(f"Do not pass both {key!r} and {alias!} as keyword arguments")
+                raise ValueError(f"Do not pass both {key!r} and {alias!r} as keyword arguments")
 
             if alias in kwargs:
                 kwargs[key] = kwargs.pop(alias)
