@@ -137,24 +137,24 @@ class Api:
 
     # Close the API
     # Should be called if the API is no longer being used
-    async def close(self):
+    async def close(self) -> None:
         await self.session.close()
 
     # Allows using the API as a context manager
     async def __aenter__(self):
         return self
 
-    async def __aexit__(self, *args, **kwargs):
+    async def __aexit__(self, *args, **kwargs) -> None:
         await self.close()
 
 
 # Not really tested at the moment
 class SyncApi(Api):
-    def generate(self, *args, **kwargs):
+    def generate(self, *args, **kwargs) -> bytes:
         return asyncio.run(super().generate(*args, **kwargs))
 
-    def cost(self, *args, **kwargs):
+    def cost(self, *args, **kwargs) -> Decimal:
         return asyncio.run(super().cost(*args, **kwargs))
 
-    def close(self):
+    def close(self) -> None:
         asyncio.run(self.session.close())
