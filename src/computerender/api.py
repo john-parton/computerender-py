@@ -72,7 +72,7 @@ class Api:
 
     # This would probably be easier with pydantic or attrs, but I don't want
     # to add a dep just for this
-    def _clean_kwargs(self, kwargs) -> dict:
+    def _clean_kwargs(self, kwargs: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         for key, alias in self.KWARG_ALIASES:
             if key in kwargs and alias in kwargs:
                 raise ValueError(
@@ -99,12 +99,12 @@ class Api:
         async with self.session.get(request_url, params=kwargs) as response:
             if response.status == 400:
 
-                text = await response.text()
+                data = await response.json()
 
-                if text == "":
+                if data.get("status", "") == "error" and data.get("message", "") == "potentially unsafe words in prompt":
                     raise TermError(f"{prompt!r} triggered computerender keyword check")
                 else:
-                    raise ApiError(f"API Error: {text}")
+                    raise ApiError(f"API Error: {data!r}")
 
             elif response.status != 200:
                 raise ValueError("Got non-200 status code")
