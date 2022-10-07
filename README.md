@@ -37,7 +37,32 @@ $ pip install computerender
 
 ## Usage
 
-Please see the [Command-line Reference] for details.
+It is recommended to set the `COMPUTERENDER_KEY` environmental variable to your API key.
+
+Otherwise, you can pass it to the `Computerender` class as `api_key`.
+
+Basic usage of asynchronous client.
+
+```python
+import asyncio
+
+from computerender import Computerender
+
+
+async def main():
+
+    async with Computerender() as api:
+        data: bytes = api.generate("A cowboy wearing a pink hat", width=512, height=512, guidance=7.5, seed=8675309)
+    
+    with open("a-cowboy-wearing-a-pink-hat.jpg", "wb") as f:
+        f.write(data)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+Sync client is not recommended at this time.
 
 ## Contributing
 
