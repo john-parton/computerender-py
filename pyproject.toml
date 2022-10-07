@@ -17,7 +17,6 @@ Changelog = "https://github.com/john-parton/computerender/releases"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-click = ">=8.0.1"
 aiodns = ">=3.0.0"
 aiohttp = ">=3.8.3,<4.0"
 
@@ -46,9 +45,6 @@ sphinx-click = ">=3.0.2"
 typeguard = ">=2.13.3"
 xdoctest = {extras = ["colors"], version = ">=0.15.10"}
 myst-parser = {version = ">=0.16.1"}
-
-[tool.poetry.scripts]
-computerender = "computerender.__main__:main"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
