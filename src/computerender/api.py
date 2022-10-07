@@ -58,7 +58,7 @@ class Api:
         currency_type, amount = value[0], value[1:]
 
         if currency_type != "$":
-            raise ValueError(f"Expected US dollars, got {value}")
+            raise ValueError(f"Expected US dollars, got {value!r}")
 
         return D(amount)
 
