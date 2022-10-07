@@ -101,10 +101,16 @@ class Api:
 
                 data = await response.json()
 
-                if data.get("status", "") == "error" and data.get("message", "") == "potentially unsafe words in prompt":
-                    raise TermError(f"{prompt!r} triggered computerender keyword check")
+                if data.get("status", "") == "error":
+                    error_message = data.get("message", "")
+
+                    if error_message == "potentially unsafe words in prompt":
+                        raise TermError(f"{prompt!r} triggered computerender keyword check")
+                    else:
+                        raise ApiError(f"API Error: {error_message!r}")
+
                 else:
-                    raise ApiError(f"API Error: {data!r}")
+                    raise ValueError(f"Computerender HTTP400: {data}")
 
             elif response.status != 200:
                 raise ValueError("Got non-200 status code")
