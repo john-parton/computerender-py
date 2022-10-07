@@ -5,15 +5,15 @@ description = "Computerender"
 authors = ["John Parton <john.parton.iv@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/john-parton/computerender"
-repository = "https://github.com/john-parton/computerender"
-documentation = "https://computerender.readthedocs.io"
+homepage = "https://github.com/john-parton/computerender-py"
+repository = "https://github.com/john-parton/computerender-py"
+documentation = "https://computerender-py.readthedocs.io"
 classifiers = [
     "Development Status :: 1 - Planning",
 ]
 
 [tool.poetry.urls]
-Changelog = "https://github.com/john-parton/computerender/releases"
+Changelog = "https://github.com/john-parton/computerender-py/releases"
 
 [tool.poetry.dependencies]
 python = "^3.7"
