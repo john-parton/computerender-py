@@ -38,6 +38,9 @@ class ContentError(SafetyError):
 
 
 class Api:
+    """Wrapper around computerender HTTP API
+    
+    Generate images using Stable Diffusion"""
 
     BASE_URL = f"https://api.computerender.com/"
 
@@ -48,8 +51,13 @@ class Api:
     ]
 
     def __init__(self, api_key: typing.Optional[str] = None):
+        """Constructor method
+        """
         self.api_key = api_key or os.environ["COMPUTERENDER_KEY"]
         self.headers = {"Authorization": f"X-API-Key {self.api_key}"}
+        # I think there's a way to get running event loop here and pass it in optionally
+        # or maybe even lazily
+        # One of my other libs does something similar
         self.session = aiohttp.ClientSession(headers=self.headers)
 
     def _parse_currency(self, value: str) -> Decimal:
@@ -92,6 +100,9 @@ class Api:
         return kwargs
 
     async def generate(self, prompt: str, **kwargs) -> bytes:
+        """Returns byte string of generated image. Byte string is JPEG formatted image.
+        
+        Raises an exception if image could not be generated."""
         kwargs = self._clean_kwargs(kwargs)
 
         request_url: str = self._format_url("generate", prompt)
@@ -132,6 +143,7 @@ class Api:
 
     # TODO improve the annotation here
     async def cost(self, prompt: str, **kwargs) -> Decimal:
+        """Returns cost to generate image."""
         kwargs = self._clean_kwargs(kwargs)
 
         request_url: str = self._format_url("cost", prompt)
@@ -150,11 +162,13 @@ class Api:
     async def __aenter__(self):
         return self
 
+    # TODO Fix parameters
     async def __aexit__(self, *args, **kwargs) -> None:
         await self.close()
 
 
 # Not really tested at the moment
+# Causes mypy type errors due to type mismatch of methods
 class SyncApi(Api):
     def generate(self, *args, **kwargs) -> bytes:
         return asyncio.run(super().generate(*args, **kwargs))
