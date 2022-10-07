@@ -2,7 +2,7 @@ import asyncio
 import io
 import os
 import typing
-from decimal import Decimal as D
+from decimal import Decimal
 from urllib.parse import quote_plus
 
 import aiohttp
@@ -52,13 +52,13 @@ class Api:
         self.headers = {"Authorization": f"X-API-Key {self.api_key}"}
         self.session = aiohttp.ClientSession(headers=self.headers)
 
-    def _parse_currency(self, value: str) -> D:
+    def _parse_currency(self, value: str) -> Decimal:
         currency_type, amount = value[0], value[1:]
 
         if currency_type != "$":
             raise ValueError(f"Expected US dollars, got {value!r}")
 
-        return D(amount)
+        return Decimal(amount)
 
     # Check if the image is completely black
     def _check_nsfw(self, data: bytes) -> bool:
@@ -99,12 +99,12 @@ class Api:
         async with self.session.get(request_url, params=kwargs) as response:
             if response.status == 400:
 
-                body = await response.read()
+                text = await response.text()
 
-                if body == b"":
+                if text == "":
                     raise TermError(f"{prompt!r} triggered computerender keyword check")
                 else:
-                    raise ApiError(f"API Error: {body}")
+                    raise ApiError(f"API Error: {text}")
 
             elif response.status != 200:
                 raise ValueError("Got non-200 status code")
@@ -125,7 +125,7 @@ class Api:
                 return body
 
     # TODO improve the annotation here
-    async def cost(self, prompt: str, **kwargs) -> D:
+    async def cost(self, prompt: str, **kwargs) -> Decimal:
         kwargs = self._clean_kwargs(kwargs)
 
         request_url: str = self._format_url("cost", prompt)
