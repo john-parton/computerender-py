@@ -13,7 +13,11 @@ from PIL import Image
 
 
 
-class SafetyError(ValueError):
+class ApiError(ValueError):
+    pass
+
+
+class SafetyError(ApiError):
     pass
 
 
@@ -36,6 +40,12 @@ class ContentError(SafetyError):
 class Api:
 
     BASE_URL = f"https://api.computerender.com/"
+
+    KWARG_ALIASES = [
+        ("w", "width"),
+        ("h", "height"),
+        ("guidance", "cfg_scale"),
+    ]
 
     def __init__(self, api_key: typing.Optional[str] = None):
         self.api_key = api_key or os.environ["COMPUTERENDER_KEY"]
@@ -62,29 +72,58 @@ class Api:
     def _format_url(self, prefix: str, prompt: str) -> str:
         return f"{self.BASE_URL}{prefix}/{quote_plus(prompt)}"
 
+    # This would probably be easier with pydantic or attrs, but I don't want
+    # to add a dep just for this
+    def _clean_kwargs(self, kwargs) -> dict:
+        for key, alias in self.KWARG_ALIASES:
+            if key in kwargs and alias in kwargs:
+                raise ValueError(f"Do not pass both {key!r} and {alias!} as keyword arguments")
+
+            if alias in kwargs:
+                kwargs[key] = kwargs.pop(alias)
+
+        extra_keys = kwargs.keys() - {"w", "h", "seed", "guidance", "iterations"}
+
+        if extra_keys:
+            raise ValueError(f"Invalid keys passed to Computerender api: {', '.join(map(repr, extra_keys))}")
+
+        return kwargs
+
     async def generate(self, prompt: str, **kwargs) -> bytes:
+        kwargs = self._clean_kwargs(kwargs)
+
         request_url: str = self._format_url("generate", prompt)
 
         async with self.session.get(request_url, params=kwargs) as response:
             if response.status == 400:
-                raise TermError(f"{prompt!r} triggered computerender keyword check")
 
-            elif response.staus != 200:
+                body = await response.read()
+
+                if body == b"":
+                    raise TermError(f"{prompt!r} triggered computerender keyword check")
+                else:
+                    raise ApiError(f"API Error: {body}")
+
+            elif response.status != 200:
                 raise ValueError("Got non-200 status code")
 
-            # TODO Handle other status codes
+            else:
 
-            # TODO Handle out of credits, wrong API key, etc.
+                # TODO Handle other status codes
 
-            body = await response.read()
+                # TODO Handle out of credits, wrong API key, etc.
 
-            if self._check_nsfw(body):
-                raise ContentError(f"{prompt!r} triggered computerender post-generation check")
+                body = await response.read()
 
-            return body
+                if self._check_nsfw(body):
+                    raise ContentError(f"{prompt!r} triggered computerender post-generation check")
+
+                return body
     
     # TODO improve the annotation here
     async def cost(self, prompt: str, **kwargs) -> D:
+        kwargs = self._clean_kwargs(kwargs)
+        
         request_url: str = self._format_url("cost", prompt)
 
         async with self.session.get(request_url, params=kwargs) as response:
