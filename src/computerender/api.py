@@ -38,11 +38,11 @@ class ContentError(SafetyError):
 
 
 class Api:
-    """Wrapper around computerender HTTP API
+    """Wrapper around computerender HTTP API.
 
     Generate images using Stable Diffusion"""
 
-    BASE_URL = f"https://api.computerender.com/"
+    BASE_URL = "https://api.computerender.com/"
 
     KWARG_ALIASES = [
         ("w", "width"),
@@ -51,7 +51,7 @@ class Api:
     ]
 
     def __init__(self, api_key: typing.Optional[str] = None):
-        """Constructor method"""
+        """Constructor method."""
         self.api_key = api_key or os.environ["COMPUTERENDER_KEY"]
         self.headers = {"Authorization": f"X-API-Key {self.api_key}"}
         # I think there's a way to get running event loop here and pass it in optionally
@@ -95,7 +95,8 @@ class Api:
 
         if extra_keys:
             raise ValueError(
-                f"Invalid keys passed to Computerender api: {', '.join(map(repr, extra_keys))}"
+                f"Invalid keys passed to Computerender api: "
+                f"{', '.join(map(repr, extra_keys))}"
             )
 
         return kwargs
