@@ -169,16 +169,3 @@ class Api:
     # TODO Fix parameters
     async def __aexit__(self, *args, **kwargs) -> None:
         await self.close()
-
-
-# Not really tested at the moment
-# Causes mypy type errors due to type mismatch of methods
-class SyncApi(Api):
-    def generate(self, *args, **kwargs) -> bytes:
-        return asyncio.run(super().generate(*args, **kwargs))
-
-    def cost(self, *args, **kwargs) -> Decimal:
-        return asyncio.run(super().cost(*args, **kwargs))
-
-    def close(self) -> None:
-        asyncio.run(self.session.close())
