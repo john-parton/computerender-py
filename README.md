@@ -62,7 +62,24 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-Sync client is not recommended at this time.
+There is a synchronous client which is a thin wrapper around the async client using 
+`asyncio.run`.
+
+```python
+from computerender.sync import generate_sync as generate
+
+
+def main():
+    data: bytes = generate("A cowboy wearing a pink hat", width=512, height=512, guidance=7.5, seed=8675309)
+
+    with open("a-cowboy-wearing-a-pink-hat.jpg", "wb") as f:
+        f.write(data)
+
+
+if __name__ == "__main__":
+    main()
+```
+
 
 ## Contributing
 
