@@ -1,4 +1,4 @@
-# Computerender
+# Unofficial Ptyhon Bindings for Computerender
 
 [![PyPI](https://img.shields.io/pypi/v/computerender.svg)][pypi status]
 [![Status](https://img.shields.io/pypi/status/computerender.svg)][pypi status]
