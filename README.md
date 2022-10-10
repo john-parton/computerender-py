@@ -53,7 +53,7 @@ async def main():
 
     async with Computerender() as api:
         data: bytes = api.generate("A cowboy wearing a pink hat", width=512, height=512, guidance=7.5, seed=8675309)
-    
+
     with open("a-cowboy-wearing-a-pink-hat.jpg", "wb") as f:
         f.write(data)
 

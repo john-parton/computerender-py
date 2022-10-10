@@ -39,7 +39,7 @@ class ContentError(SafetyError):
 
 class Api:
     """Wrapper around computerender HTTP API
-    
+
     Generate images using Stable Diffusion"""
 
     BASE_URL = f"https://api.computerender.com/"
@@ -51,8 +51,7 @@ class Api:
     ]
 
     def __init__(self, api_key: typing.Optional[str] = None):
-        """Constructor method
-        """
+        """Constructor method"""
         self.api_key = api_key or os.environ["COMPUTERENDER_KEY"]
         self.headers = {"Authorization": f"X-API-Key {self.api_key}"}
         # I think there's a way to get running event loop here and pass it in optionally
@@ -80,7 +79,9 @@ class Api:
 
     # This would probably be easier with pydantic or attrs, but I don't want
     # to add a dep just for this
-    def _clean_kwargs(self, kwargs: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+    def _clean_kwargs(
+        self, kwargs: typing.Mapping[str, typing.Any]
+    ) -> typing.Dict[str, typing.Any]:
         for key, alias in self.KWARG_ALIASES:
             if key in kwargs and alias in kwargs:
                 raise ValueError(
@@ -101,7 +102,7 @@ class Api:
 
     async def generate(self, prompt: str, **kwargs) -> bytes:
         """Returns byte string of generated image. Byte string is JPEG formatted image.
-        
+
         Raises an exception if image could not be generated."""
         kwargs = self._clean_kwargs(kwargs)
 
@@ -116,7 +117,9 @@ class Api:
                     error_message = data.get("message", "")
 
                     if error_message == "potentially unsafe words in prompt":
-                        raise TermError(f"{prompt!r} triggered computerender keyword check")
+                        raise TermError(
+                            f"{prompt!r} triggered computerender keyword check"
+                        )
                     else:
                         raise ApiError(f"API Error: {error_message!r}")
 
